@@ -1,6 +1,9 @@
 import type { Product } from './catalog.js';
 import { filterByCategory, searchProducts } from './catalog.js';
+import { addToCart } from './cart.js';
+import { readCart, saveCart } from './cart-storage.js';
 import products from './data/products.js';
+import { formatPrice } from './format-price.js';
 
 function getRequiredElement<T extends Element>(selector: string): T {
     const element = document.querySelector<T>(selector);
@@ -10,15 +13,9 @@ function getRequiredElement<T extends Element>(selector: string): T {
 
 const catalogElement = getRequiredElement<HTMLElement>('#catalog');
 const statusElement = getRequiredElement<HTMLElement>('#catalog-status');
+const cartStatusElement = getRequiredElement<HTMLElement>('#cart-status');
 const searchInput = getRequiredElement<HTMLInputElement>('#search');
 const categorySelect = getRequiredElement<HTMLSelectElement>('#category');
-
-const formatPrice = (price: number): string =>
-    new Intl.NumberFormat('ru-RU', {
-        style: 'currency',
-        currency: 'RUB',
-        maximumFractionDigits: 0,
-    }).format(price / 100);
 
 function renderProductCard(product: Product): HTMLElement {
     const column = document.createElement('div');
@@ -43,10 +40,21 @@ function renderProductCard(product: Product): HTMLElement {
     price.textContent = formatPrice(product.price);
 
     const stock = document.createElement('span');
-    stock.className = `badge align-self-start ${product.stock > 0 ? 'text-bg-success' : 'text-bg-secondary'}`;
+    stock.className = `badge ${product.stock > 0 ? 'text-bg-success' : 'text-bg-secondary'}`;
     stock.textContent = product.stock > 0 ? `В наличии: ${product.stock}` : 'Нет в наличии';
 
-    cardBody.append(category, title, price, stock);
+    const actions = document.createElement('div');
+    actions.className = 'catalog-card-actions mt-auto';
+
+    const addButton = document.createElement('button');
+    addButton.className = 'btn btn-primary btn-sm';
+    addButton.type = 'button';
+    addButton.dataset.addToCart = String(product.id);
+    addButton.textContent = 'В корзину';
+    addButton.disabled = product.stock === 0;
+
+    actions.append(stock, addButton);
+    cardBody.append(category, title, price, actions);
     card.append(cardBody);
     column.append(card);
     return column;
@@ -71,3 +79,24 @@ function renderCatalog(): void {
 searchInput.addEventListener('input', renderCatalog);
 categorySelect.addEventListener('change', renderCatalog);
 renderCatalog();
+
+catalogElement.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest<HTMLButtonElement>('[data-add-to-cart]');
+    if (!button) return;
+
+    const productId = Number(button.dataset.addToCart);
+    const product = products.find((item) => item.id === productId);
+    if (!product) {
+        cartStatusElement.textContent = 'Не удалось найти выбранный товар.';
+        return;
+    }
+
+    try {
+        const cart = addToCart(readCart(), product);
+        saveCart(cart);
+        // cartStatusElement.textContent = `«${product.name}» добавлен в корзину.`;
+    } catch (error) {
+        cartStatusElement.textContent = error instanceof Error ? error.message : String(error);
+    }
+});
