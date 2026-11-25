@@ -47,6 +47,14 @@
                 <h2 id="cart-total-heading" class="h5">Стоимость заказа</h2>
                 <div id="cart-total" aria-live="polite"></div>
             </section>
+            <form id="promo-form" class="mt-4">
+                <label class="form-label" for="promo-code">Промокод</label>
+                <div class="input-group">
+                    <input class="form-control" id="promo-code" name="promo-code" autocomplete="off" />
+                    <button class="btn btn-outline-primary" type="submit">Применить</button>
+                </div>
+            </form>
+            <p id="promo-status" class="mt-2" role="status" aria-live="polite"></p>
             <p id="cart-status" class="text-danger mt-3" role="alert"></p>
         </main>
 

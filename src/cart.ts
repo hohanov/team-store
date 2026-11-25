@@ -37,6 +37,24 @@ export function addToCart(cart: CartItem[], product: Product, quantity = 1): Car
     return cart.map((item) => (item.id === product.id ? { ...item, quantity: nextQuantity } : item));
 }
 
+export function changeQuantity(cart: CartItem[], productId: number, quantity: number): CartItem[] {
+    const existing = cart.find((item) => item.id === productId);
+    if (!existing) return cart;
+
+    if (!Number.isInteger(quantity) || quantity <= 0) {
+        throw new RangeError('Количество товара должно быть положительным целым числом.');
+    }
+    if (quantity > existing.stock) {
+        throw new RangeError(`На складе есть только ${existing.stock} шт. этого товара.`);
+    }
+
+    return cart.map((item) => (item.id === productId ? { ...item, quantity } : item));
+}
+
+export function removeFromCart(cart: CartItem[], productId: number): CartItem[] {
+    return cart.filter((item) => item.id !== productId);
+}
+
 export function calculateOrderTotal(cart: OrderItem[], promoCode = ''): OrderTotal {
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const hasDiscount = promoCode === PROMO_CODE && subtotal >= PROMO_MIN_SUBTOTAL;
