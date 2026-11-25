@@ -1,6 +1,7 @@
 import type { Product } from './catalog.js';
 import { filterByCategory, searchProducts } from './catalog.js';
 import { addToCart } from './cart.js';
+import { initializeCartCounter } from './cart-counter.js';
 import { readCart, saveCart } from './cart-storage.js';
 import products from './data/products.js';
 import { formatPrice } from './format-price.js';
@@ -16,6 +17,8 @@ const statusElement = getRequiredElement<HTMLElement>('#catalog-status');
 const cartStatusElement = getRequiredElement<HTMLElement>('#cart-status');
 const searchInput = getRequiredElement<HTMLInputElement>('#search');
 const categorySelect = getRequiredElement<HTMLSelectElement>('#category');
+
+initializeCartCounter();
 
 function renderProductCard(product: Product): HTMLElement {
     const column = document.createElement('div');

@@ -1,5 +1,6 @@
 import type { CartItem } from './cart.js';
 import { calculateOrderTotal } from './cart.js';
+import { initializeCartCounter } from './cart-counter.js';
 import { readCart } from './cart-storage.js';
 import { formatPrice } from './format-price.js';
 
@@ -12,6 +13,8 @@ function getRequiredElement<T extends Element>(selector: string): T {
 const cartItemsElement = getRequiredElement<HTMLElement>('#cart-items');
 const cartStatusElement = getRequiredElement<HTMLElement>('#cart-status');
 const cartTotalElement = getRequiredElement<HTMLElement>('#cart-total');
+
+initializeCartCounter();
 
 function renderCart(): void {
     let cart: CartItem[];

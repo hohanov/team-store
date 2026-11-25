@@ -30,4 +30,5 @@ export function readCart(): CartItem[] {
 
 export function saveCart(cart: CartItem[]): void {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    window.dispatchEvent(new Event('team-store:cart-updated'));
 }
