@@ -20,3 +20,17 @@
     border-radius: 50%;
     object-fit: cover;
 }
+
+.catalog-card {
+    border-color: #e9ecef;
+    border-radius: 0.875rem;
+    box-shadow: 0 0.5rem 1.5rem rgb(33 37 41 / 5%);
+    transition:
+        box-shadow 150ms ease,
+        transform 150ms ease;
+}
+
+.catalog-card:hover {
+    box-shadow: 0 0.75rem 1.75rem rgb(33 37 41 / 10%);
+    transform: translateY(-2px);
+}
