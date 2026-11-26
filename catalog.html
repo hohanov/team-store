@@ -26,9 +26,32 @@
             <div class="mb-4">
                 <p class="text-primary fw-semibold mb-2">Team Store</p>
                 <h1 class="display-5 fw-bold">Каталог товаров</h1>
-                <p class="text-secondary mb-0">Знакомьтесь с товарами нашего магазина.</p>
+                <p class="text-secondary mb-0">Найдите нужные товары по названию или категории.</p>
             </div>
 
+            <section class="row g-3 mb-4" aria-label="Поиск и фильтрация каталога">
+                <div class="col-12 col-md-8">
+                    <label class="form-label" for="search">Поиск по названию</label>
+                    <input
+                        class="form-control"
+                        id="search"
+                        type="search"
+                        placeholder="Например, книга"
+                        autocomplete="off"
+                    />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label" for="category">Категория</label>
+                    <select class="form-select" id="category">
+                        <option value="all">Все категории</option>
+                        <option value="electronics">Электроника</option>
+                        <option value="books">Книги</option>
+                        <option value="home">Дом</option>
+                    </select>
+                </div>
+            </section>
+
+            <p id="catalog-status" class="text-secondary" role="status" aria-live="polite"></p>
             <section
                 id="catalog"
                 class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"

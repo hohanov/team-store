@@ -1,4 +1,5 @@
 import type { Product } from './catalog.js';
+import { filterByCategory, searchProducts } from './catalog.js';
 import products from './data/products.js';
 
 function getRequiredElement<T extends Element>(selector: string): T {
@@ -8,6 +9,9 @@ function getRequiredElement<T extends Element>(selector: string): T {
 }
 
 const catalogElement = getRequiredElement<HTMLElement>('#catalog');
+const statusElement = getRequiredElement<HTMLElement>('#catalog-status');
+const searchInput = getRequiredElement<HTMLInputElement>('#search');
+const categorySelect = getRequiredElement<HTMLSelectElement>('#category');
 
 const formatPrice = (price: number): string =>
     new Intl.NumberFormat('ru-RU', {
@@ -48,4 +52,22 @@ function renderProductCard(product: Product): HTMLElement {
     return column;
 }
 
-catalogElement.replaceChildren(...products.map(renderProductCard));
+function renderCatalog(): void {
+    const categoryProducts = filterByCategory(products, categorySelect.value);
+    const visibleProducts = searchProducts(categoryProducts, searchInput.value);
+
+    statusElement.textContent = `Найдено товаров: ${visibleProducts.length}`;
+    if (visibleProducts.length === 0) {
+        const message = document.createElement('p');
+        message.className = 'col-12 alert alert-light mb-0';
+        message.textContent = 'По вашему запросу ничего не найдено.';
+        catalogElement.replaceChildren(message);
+        return;
+    }
+
+    catalogElement.replaceChildren(...visibleProducts.map(renderProductCard));
+}
+
+searchInput.addEventListener('input', renderCatalog);
+categorySelect.addEventListener('change', renderCatalog);
+renderCatalog();
