@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { filterByCategory, searchProducts } from '../../src/catalog.js';
+import { filterByCategory, searchProducts, sortProductsByPrice } from '../../src/catalog.js';
 import type { Product } from '../../src/catalog.js';
 
 const products: Product[] = [
@@ -34,5 +34,13 @@ describe('filterByCategory', () => {
 
     it('returns an empty list when the category has no products', () => {
         expect(filterByCategory(products, 'toys')).toEqual([]);
+    });
+});
+
+describe('sortProductsByPrice', () => {
+    it('sorts by ascending or descending price without mutating the source array', () => {
+        expect(sortProductsByPrice(products).map(({ id }) => id)).toEqual([2, 3, 1]);
+        expect(sortProductsByPrice(products, 'desc').map(({ id }) => id)).toEqual([1, 3, 2]);
+        expect(products.map(({ id }) => id)).toEqual([1, 2, 3]);
     });
 });
