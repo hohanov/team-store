@@ -1,5 +1,5 @@
 import type { Product } from './catalog.js';
-import { filterByCategory, searchProducts } from './catalog.js';
+import { filterByCategory, searchProducts, sortProductsByPrice } from './catalog.js';
 import products from './data/products.js';
 
 function getRequiredElement<T extends Element>(selector: string): T {
@@ -12,6 +12,7 @@ const catalogElement = getRequiredElement<HTMLElement>('#catalog');
 const statusElement = getRequiredElement<HTMLElement>('#catalog-status');
 const searchInput = getRequiredElement<HTMLInputElement>('#search');
 const categorySelect = getRequiredElement<HTMLSelectElement>('#category');
+const sortSelect = getRequiredElement<HTMLSelectElement>('#sort');
 
 const formatPrice = (price: number): string =>
     new Intl.NumberFormat('ru-RU', {
@@ -54,7 +55,9 @@ function renderProductCard(product: Product): HTMLElement {
 
 function renderCatalog(): void {
     const categoryProducts = filterByCategory(products, categorySelect.value);
-    const visibleProducts = searchProducts(categoryProducts, searchInput.value);
+    const matchingProducts = searchProducts(categoryProducts, searchInput.value);
+    const sortDirection = sortSelect.value === 'desc' ? 'desc' : 'asc';
+    const visibleProducts = sortProductsByPrice(matchingProducts, sortDirection);
 
     statusElement.textContent = `Найдено товаров: ${visibleProducts.length}`;
     if (visibleProducts.length === 0) {
@@ -70,4 +73,5 @@ function renderCatalog(): void {
 
 searchInput.addEventListener('input', renderCatalog);
 categorySelect.addEventListener('change', renderCatalog);
+sortSelect.addEventListener('change', renderCatalog);
 renderCatalog();

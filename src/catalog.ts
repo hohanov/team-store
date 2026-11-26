@@ -16,3 +16,8 @@ export function filterByCategory(products: Product[], category?: string): Produc
     if (!category || category === 'all') return [...products];
     return products.filter((product) => product.category === category);
 }
+
+export function sortProductsByPrice(products: Product[], direction: 'asc' | 'desc' = 'asc'): Product[] {
+    const multiplier = direction === 'desc' ? -1 : 1;
+    return [...products].sort((first, second) => (first.price - second.price) * multiplier);
+}
